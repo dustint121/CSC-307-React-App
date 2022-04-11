@@ -45,12 +45,8 @@ app.get('/', (req, res) => {
     res.send('Hello World!');
 });
 
-//Part2
-app.get('/users', (req, res) => {
-    res.send(users);
-});
 
-
+//get user by name or return list of users
 app.get('/users', (req, res) => {
     const name = req.query.name;
     if (name != undefined){
@@ -63,11 +59,14 @@ app.get('/users', (req, res) => {
     }
 });
 
+//function to get user by name
 const findUserByName = (name) => { 
     return users['users_list'].filter( (user) => user['name'] === name); 
 }
 
 
+
+//get user by id or return list of users; return 404 if failed
 app.get('/users/:id', (req, res) => {
     const id = req.params['id']; //or req.params.id
     let result = findUserById(id);
@@ -79,12 +78,15 @@ app.get('/users/:id', (req, res) => {
     }
 });
 
+
+//function to get user by id
 function findUserById(id) {
     return users['users_list'].find( (user) => user['id'] === id); // or line below
     //return users['users_list'].filter( (user) => user['id'] === id);
 }
 
 
+//add user to table and return code 201
 app.post('/users', (req, res) => {
     const userToAdd = req.body;
     userToAdd['id'] = randomId();
@@ -92,10 +94,12 @@ app.post('/users', (req, res) => {
     res.status(201).send(userToAdd);
 });
 
+//function to create random id
 function randomId(){
-    return Math.random().toString(36).substring(2, 8);
+    return Math.random().toString(36).substring(4, 10);
 }
 
+//function to push new user to table
 function addUser(user){
     users['users_list'].push(user);
 }
@@ -104,7 +108,7 @@ function addUser(user){
 
 
 
-
+//get user by name and id; or return code 204
 app.get('/users/:name:job', (req, res) => {
     const name = req.params['name']; //or req.params.id
     const job = req.params['job'];
@@ -117,11 +121,11 @@ app.get('/users/:name:job', (req, res) => {
     }
 });
 
-
+//function to get user by job
 const findUserByJob = (job,list) => {
     return list.filter((user) => user['job'] === job);
 }
-
+//function to get user by name and job
 const findUserByNameandJob = (name, job) => {
     return findUserByJob(job, findUserByName(name));
 }
@@ -129,14 +133,7 @@ const findUserByNameandJob = (name, job) => {
 
 
 
-
-function removeUserById(id) {
-    index = users['users_list'].indexOf(findUserById(id));
-    if(index != -1)
-        return users['users_list'].splice(index , 1); 
-    return
-}
-
+//on successful delete return code 204, else return 404
 app.delete('/users/:id', (req, res) => {
     const id = req.params['id']; //or req.params.id
     let result = removeUserById(id);
@@ -144,6 +141,14 @@ app.delete('/users/:id', (req, res) => {
         res.status(404).send('Resource not found.');
     res.status(204).end();
 });
+
+//function to delete user by id
+function removeUserById(id) {
+    index = users['users_list'].indexOf(findUserById(id));
+    if(index != -1)
+        return users['users_list'].splice(index , 1); 
+    return
+}
 
 
 

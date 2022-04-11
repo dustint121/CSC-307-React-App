@@ -7,6 +7,8 @@ import axios from 'axios';
 function MyApp() {
   const [characters, setCharacters] = useState([]);
 
+
+//put initial/current backend data into frontend
   useEffect(() => {
     fetchAll().then( result => {
        if (result)
@@ -14,7 +16,7 @@ function MyApp() {
      });
   }, [] );
 
-
+//get data from backend
 async function fetchAll(){
   try {
      const response = await axios.get('http://localhost:5000/users');
@@ -27,6 +29,22 @@ async function fetchAll(){
   }
 }
 
+
+
+
+//delete functions
+function removeOneCharacter (index) {
+  removeUser(index).then( result => {
+      if (result && result.status === 204){
+          const updated = characters.filter((character, i) => {
+              return i !== index
+          });
+          setCharacters(updated);
+      } 
+
+  });
+}
+//synch delete
 async function removeUser (index) {
   try {
       const response = await axios.delete('http://localhost:5000/users/'.concat(characters[index]['id']));
@@ -40,21 +58,7 @@ async function removeUser (index) {
 
 
 
-function removeOneCharacter (index) {
-  removeUser(index).then( result => {
-      if (result && result.status === 204){
-          const updated = characters.filter((character, i) => {
-              return i !== index
-          });
-          setCharacters(updated);
-      } 
-
-  });
-}
-
-
-
-
+// update/add functions
   function updateList(person) { 
     makePostCall(person).then( result => {
     if (result && result.status === 200)
@@ -62,7 +66,7 @@ function removeOneCharacter (index) {
     });
   }
     
-    
+//synch adding person to list
   async function makePostCall(person){
     try {
         const response = await axios.post('http://localhost:5000/users', person);
@@ -74,6 +78,9 @@ function removeOneCharacter (index) {
     }
   }
 
+
+
+
 return (
   <div className="container">
     <Table characterData={characters} removeCharacter={removeOneCharacter} />
@@ -82,11 +89,6 @@ return (
 
   </div>
 )
-
-
-
-
-
 
 }
 
