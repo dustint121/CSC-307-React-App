@@ -41,9 +41,6 @@ const users = {
  
 
 
-
-
-//Part 1
 app.get('/', (req, res) => {
     res.send('Hello World!');
 });
@@ -54,7 +51,6 @@ app.get('/users', (req, res) => {
 });
 
 
-//Part 4
 app.get('/users', (req, res) => {
     const name = req.query.name;
     if (name != undefined){
@@ -72,7 +68,6 @@ const findUserByName = (name) => {
 }
 
 
-// Part 5
 app.get('/users/:id', (req, res) => {
     const id = req.params['id']; //or req.params.id
     let result = findUserById(id);
@@ -90,7 +85,6 @@ function findUserById(id) {
 }
 
 
-//Part 6
 app.post('/users', (req, res) => {
     const userToAdd = req.body;
     userToAdd['id'] = randomId();
@@ -109,7 +103,6 @@ function addUser(user){
 
 
 
-//Part 7
 
 
 app.get('/users/:name:job', (req, res) => {
